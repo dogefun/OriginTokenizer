@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//test change
 namespace OriginTokenizer
 {
     class DFAEdge

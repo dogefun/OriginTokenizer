@@ -27,7 +27,7 @@ namespace OriginTokenizer
         static void Main(string[] args)
         {
             Testcase();
-            Console.Read();
+            //Console.Read();
         }
     }
 }

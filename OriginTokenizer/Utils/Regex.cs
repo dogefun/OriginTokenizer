@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Regex is used to create NFA model using RegularExpression rule
 namespace OriginTokenizer.Utils
 {
     class Regex 
@@ -12,6 +13,20 @@ namespace OriginTokenizer.Utils
         private string regexDescribtion;
         private NFAModel defineNFAModel;
 
+        public string RegexDescribtion
+        {
+            get
+            {
+                return regexDescribtion;
+            }
+            set
+            {
+                if(regexDescribtion == null || regexDescribtion == "")
+                {
+                    regexDescribtion = value;
+                }
+            }
+        }
         public NFAModel DefineedNFAModel
         {
             get
@@ -19,35 +34,22 @@ namespace OriginTokenizer.Utils
                 return defineNFAModel;
             }
         }
-        
-        private void ShortenNFA(NFAEdge edge)
+        public Regex() { }
+        public Regex(string regexDesc)
         {
-            //var entry = defineNFAModel.entryEdge;
-            var model = edge.lead;
-            if (model.Lead.Count == 0)
-            {
-                //model.isEndState = true;//争议
-                return;
-            }
-            else if(model.Lead.Count == 1)
-            {
-                if(model.Lead[0].statement == 0)
-                {
-                    edge.lead = model.Lead[0].lead;
-                }
-            }
-
-
-
+            regexDescribtion = regexDesc;
         }
 
-        //需要加更严格的规范
+        //can only contain value
+        //97-122,65-90,48-57
         //a-z，A-Z，1-9
-        public static Regex DefineRange(string x,string y)
+        public static Regex DefineRange(char x, char y)
         {
-            if(x.Length > 1 || y.Length > 1 || x[0] > y[0])
+            if(x > y)
             {
-                throw new Exception("Input Error");
+                var t = x;
+                x = y;
+                y = x;
             }
 
             Regex r = new Regex();
@@ -56,20 +58,16 @@ namespace OriginTokenizer.Utils
             model.tailState = new NFAState(1);
             model.entryEdge = new NFAEdge(s);
 
-            for(int i = x[0];i <= y[0]; i++)
+            for(int i = x;i <= y; i++)
             {
                 s.AddEdge(new NFAEdge(model.tailState, i));
             }
 
-            
             return r;
-
         }
 
         //basisOp
-        //clean unnessary edge
-
-         //tested
+        //tested
         public Regex DefineLiteral(string input)
         {
             NFAModel model = new NFAModel();
@@ -123,15 +121,7 @@ namespace OriginTokenizer.Utils
         {
             NFAModel model = this.defineNFAModel;
             model.tailState.AddEdge(right.defineNFAModel.entryEdge);
-
-            //create a new tail
-            //is it need?
-            //model.tailState = new NFAState();
-            //right.defineNFAModel.tailState.AddEdgeTo(model.tailState);
-
-            //test modify
             model.tailState = right.defineNFAModel.tailState;
-            //defineNFAModel = model;
             return this;
         }
 
@@ -153,14 +143,12 @@ namespace OriginTokenizer.Utils
             return CreateWithLiteral(input).KleeneStar();
         }
 
-        //tested
         public static Regex DefineConcat(Regex left, Regex right)
         {
             left.Concat(right);
             return left;
         }
 
-        //tested
         public static Regex DefineUnion(Regex left, Regex right)
         {
             left.Union(right);

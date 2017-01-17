@@ -36,7 +36,7 @@ namespace OriginTokenizer
             return input;
         }
 
-        public string ShowStatesS()
+        public string Properites()
         {
             string res = "";
 

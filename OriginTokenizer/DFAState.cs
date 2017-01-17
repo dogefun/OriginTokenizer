@@ -47,7 +47,6 @@ namespace OriginTokenizer
         public DFAState E_closure(int e)
         {
             var newstate = new DFAState();
-             
             foreach(var x in edges)
             {
                 if(x.statement == e)
@@ -68,8 +67,7 @@ namespace OriginTokenizer
                 return;
 
             states.Add(s);
-            edges = edges.Union(s.Lead).ToList();//wait more test
-
+            edges = edges.Union(s.Lead).ToList();
             for (int i = 0; i < edges.Count; i++)
             {
                 var x = edges[i];
@@ -98,6 +96,7 @@ namespace OriginTokenizer
             return log;
         }
 
+        //high cost
         public bool isEqual(DFAState s)
         {
             return states.Except(s.states).Count() == 0 && s.states.Except(states).Count() == 0;

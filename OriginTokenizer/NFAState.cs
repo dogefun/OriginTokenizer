@@ -37,21 +37,13 @@ namespace OriginTokenizer
 
         public void RebuildStates(List<NFAState> list)
         {
-            if (list.Contains(this))
+            if (list.Contains(this) || this.lead.Count == 0)
                 return;
 
             list.Add(this);
-
-            if (this.lead.Count == 0)
+            foreach (var x in lead)
             {
-                return;
-            }
-            else
-            {
-                foreach(var x in lead)
-                {
-                    x.lead.RebuildStates(list);
-                }
+                x.lead.RebuildStates(list);
             }
         }
     }
