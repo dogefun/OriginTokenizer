@@ -14,7 +14,7 @@ namespace OriginTokenizer
             r = Regex.CreateWithLiteral("a").Union(Regex.CreateWithLiteral("b")).KleeneStar().Concat(Regex.CreateWithLiteral("abb"));
             //r.Concat
             r.DefineedNFAModel.RenameStates(1);
-
+            r.RegexDescribtion = "book execrise";
             //Console.WriteLine(r.DefineedNFAModel.ShowStatesS());
             DFAModel m = new DFAModel();
             m.SetRegularExpression(r);
