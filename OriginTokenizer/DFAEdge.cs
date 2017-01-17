@@ -8,8 +8,8 @@ namespace OriginTokenizer
 {
     class DFAEdge
     {
-        public DFAState lead;
-        public int statement = 0;
+        internal DFAState lead;
+        internal int statement = 0;
 
         public DFAEdge()
         {

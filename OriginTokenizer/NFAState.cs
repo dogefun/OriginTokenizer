@@ -8,8 +8,8 @@ namespace OriginTokenizer
 {
     class NFAState
     {
-        public int id;
-        public bool isEndState;
+        internal int id;
+        internal bool isEndState = false;
         private List<NFAEdge> lead = new List<NFAEdge>();
 
         public List<NFAEdge> Lead

@@ -10,34 +10,35 @@ namespace OriginTokenizer
     class DFAModel
     {
         public DFAEdge entryEdge;
-        public List<NFAModel> NFACollection;
+        public List<Regex> regexCollection;
         public List<DFAState> DFAList;
 
         public DFAModel()
         {
-            NFACollection = new List<NFAModel>();
+            regexCollection = new List<Regex>();
             DFAList = new List<DFAState>();
         }
         public void SetRegularExpression(Regex regex)
         {
-            var nfa = regex.DefineedNFAModel;
-            if (NFACollection.Contains(nfa))
+            //var nfa = regex.DefineedNFAModel;
+            if (regexCollection.Contains(regex))
                 return;
 
-            NFACollection.Add(nfa);
+            regexCollection.Add(regex);
         }
 
         public void CreateDFAModel()
         {
             var finalNFA = new NFAModel();
-            var tmpState = new NFAState();
+            var tmpState = new NFAState(0);
             finalNFA.entryEdge = new NFAEdge(tmpState);
-            foreach(var x in NFACollection)
+            var index = 1;
+            foreach(var regex in regexCollection)
             {
+                var x = regex.DefineedNFAModel;
                 tmpState.AddEdge(x.entryEdge);
+                index = x.RenameStates(index);
             }
-
-            finalNFA.RenameStates(1);
 
             //make first dfaset
             DFAState first = new DFAState(tmpState);
@@ -80,23 +81,45 @@ namespace OriginTokenizer
                 }
             }
 
+            //must be very very slow
+            for(int i = regexCollection.Count - 1;i >= 0; i--)
+            {
+                var op = regexCollection[i];
+                var nfa = op.DefineedNFAModel;
+                foreach (var x in DFAList)
+                {
+                    if (x.Contains(nfa.tailState))
+                    {
+                        x.isEndState = true;
+                        x.describtion = op.RegexDescribtion;
+                    }
+                }
+            }
         }
 
-        public static DFAModel CreateDFAModel(NFAModel nfa)
-        {
-            DFAModel model = new DFAModel();
-            model.NFACollection.Add(nfa);
-            model.CreateDFAModel();
-            return model;
-        }
+        //temp stop using
+        //public static DFAModel CreateDFAModel(NFAModel nfa)
+        //{
+        //    DFAModel model = new DFAModel();
+        //    model.regexCollection.Add(nfa);
+        //    model.CreateDFAModel();
+        //    return model;
+        //}
 
+       
         public string Properites()
         {
             string a = "Contain:\n";
             foreach(var x in DFAList)
             {
                 a += x.Id.ToString() + "\n";
-                foreach(var y in x.ContainStates)
+                if (x.isEndState)
+                {
+                    a += "End Of ";
+                    a += x.describtion;
+                    a += "\n";
+                }
+                foreach(var y in x.States)
                 {
                     a += y.id.ToString() + " ";
                 }

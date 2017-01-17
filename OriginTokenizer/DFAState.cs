@@ -12,16 +12,29 @@ namespace OriginTokenizer
         private List<NFAEdge> edges;
         private List<DFAEdge> lead = new List<DFAEdge>();
 
-        public bool isEndState;
-        public string describtion;
+        internal bool isEndState;
+        internal string describtion;
+        //public bool EndState
+        //{
+        //    get
+        //    {
+        //        return isEndState;
+        //    }
+        //}
 
+        //public string Describtion
+        //{
+        //    get
+        //    {
+        //        return describtion;
+        //    }
+        //}
         public int Id
         {
             get;set;
         }
-        public List<NFAState> ContainStates { get { return states; } }
+        public List<NFAState> States { get { return states; } }
         public List<NFAEdge> Edges{ get { return edges; } }
-
         public List<DFAEdge> Lead { get { return lead; } }
         public DFAState()
         {
@@ -65,7 +78,6 @@ namespace OriginTokenizer
         {
             if (states.Contains(s))
                 return;
-
             states.Add(s);
             edges = edges.Union(s.Lead).ToList();
             for (int i = 0; i < edges.Count; i++)
@@ -78,7 +90,6 @@ namespace OriginTokenizer
                     i--;
                 }
             }
-         
         }
 
         public string Properites()
@@ -96,7 +107,10 @@ namespace OriginTokenizer
             return log;
         }
 
-        //high cost
+        public bool Contains(NFAState s)
+        {
+            return states.Contains(s);
+        }
         public bool isEqual(DFAState s)
         {
             return states.Except(s.states).Count() == 0 && s.states.Except(states).Count() == 0;

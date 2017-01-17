@@ -8,10 +8,9 @@ namespace OriginTokenizer
 {
     class NFAModel
     {
-        public NFAEdge entryEdge;
-        public List<NFAState> states;
-        public NFAState tailState;
-
+        internal NFAEdge entryEdge;
+        internal List<NFAState> states;
+        internal NFAState tailState;
         public int Count
         {
             get
@@ -33,6 +32,8 @@ namespace OriginTokenizer
             {
                 x.id = input++;
             }
+            if(tailState != null)
+                tailState.isEndState = true;
             return input;
         }
 

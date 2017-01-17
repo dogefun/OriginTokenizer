@@ -23,11 +23,12 @@ namespace OriginTokenizer
             //DFAModel m = DFAModel.CreateDFAModel(r.DefineedNFAModel);
 
             Console.WriteLine(m.Properites());
+
         }
         static void Main(string[] args)
         {
             Testcase();
-            //Console.Read();
+            Console.Read();
         }
     }
 }
