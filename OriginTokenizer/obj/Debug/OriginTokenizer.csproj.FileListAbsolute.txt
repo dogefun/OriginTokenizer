@@ -1,0 +1,6 @@
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\bin\Debug\OriginTokenizer.exe.config
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\bin\Debug\OriginTokenizer.exe
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\bin\Debug\OriginTokenizer.pdb
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\obj\Debug\OriginTokenizer.csprojResolveAssemblyReference.cache
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\obj\Debug\OriginTokenizer.exe
+c:\users\stxyf\documents\visual studio 2015\Projects\OriginTokenizer\OriginTokenizer\obj\Debug\OriginTokenizer.pdb
