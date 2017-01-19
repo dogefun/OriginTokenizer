@@ -1,5 +1,4 @@
-﻿using OriginTokenizer.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +19,6 @@ namespace OriginTokenizer
         }
         public void SetRegularExpression(Regex regex)
         {
-            //var nfa = regex.DefineedNFAModel;
             if (regexCollection.Contains(regex))
                 return;
 
@@ -91,22 +89,20 @@ namespace OriginTokenizer
                     if (x.Contains(nfa.tailState))
                     {
                         x.isEndState = true;
-                        x.describtion = op.RegexDescribtion;
+                        x.describtion = op.Describtion;
                     }
                 }
             }
         }
 
-        //temp stop using
-        //public static DFAModel CreateDFAModel(NFAModel nfa)
-        //{
-        //    DFAModel model = new DFAModel();
-        //    model.regexCollection.Add(nfa);
-        //    model.CreateDFAModel();
-        //    return model;
-        //}
+        public static DFAModel CreateDFAModel(Regex regex)
+        {
+            DFAModel model = new DFAModel();
+            model.regexCollection.Add(regex);
+            model.CreateDFAModel();
+            return model;
+        }
 
-       
         public string Properites()
         {
             string a = "Contain:\n";

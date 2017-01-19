@@ -22,13 +22,13 @@ namespace OriginTokenizer
         //    }
         //}
 
-        //public string Describtion
-        //{
-        //    get
-        //    {
-        //        return describtion;
-        //    }
-        //}
+        public string Describtion
+        {
+            get
+            {
+                return describtion;
+            }
+        }
         public int Id
         {
             get;set;

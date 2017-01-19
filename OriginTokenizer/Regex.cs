@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 //Regex is used to create NFA model using RegularExpression rule
-namespace OriginTokenizer.Utils
+namespace OriginTokenizer
 {
     class Regex 
     {
@@ -13,7 +13,7 @@ namespace OriginTokenizer.Utils
         private string regexDescribtion;
         private NFAModel defineNFAModel;
 
-        public string RegexDescribtion
+        public string Describtion
         {
             get
             {

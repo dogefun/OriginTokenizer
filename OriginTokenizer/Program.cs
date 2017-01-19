@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OriginTokenizer.Utils;
+
 namespace OriginTokenizer
 {
     class  Program
     {
         static void Testcase()
         {
-            Regex r = new Regex();
-            r = Regex.CreateWithLiteral("a").Union(Regex.CreateWithLiteral("b")).KleeneStar().Concat(Regex.CreateWithLiteral("abb"));
-            //r.Concat
-            r.DefineedNFAModel.RenameStates(1);
-            r.RegexDescribtion = "book execrise";
-            //Console.WriteLine(r.DefineedNFAModel.ShowStatesS());
-            DFAModel m = new DFAModel();
-            m.SetRegularExpression(r);
-            m.CreateDFAModel();
-            //DFAState s = new DFAState(r.DefineedNFAModel.entryEdge.lead);
-            //DFAModel m = DFAModel.CreateDFAModel(r.DefineedNFAModel);
+            ScannerInfo info = new ScannerInfo();
 
-            Console.WriteLine(m.Properites());
+            Regex regex1 = new Regex();
+            regex1.DefineLiteral("string");
+            regex1.Describtion = "string key word";
+
+            Regex regex = new Regex();
+            regex.Describtion = "string with no number";
+            regex.DefineLiteral("\"");
+            regex.Concat(Regex.DefineRange('a','z').Union(Regex.DefineRange('A', 'Z')).KleeneStar()).Concat(Regex.CreateWithLiteral("\""));
+
+            info.AddRegex(regex1);
+            info.AddRegex(regex);
+
+            info.CreateInfo();//try to remove this
+            Scanner scanner = new Scanner(info);
+
+            scanner.SetSource("\"adad\"string");
+            var t = scanner.Read();
+            t = scanner.Read();
+            Console.WriteLine(t.value);
 
         }
         static void Main(string[] args)
