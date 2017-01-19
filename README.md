@@ -1,2 +1,3 @@
 # OriginTokenizer
-tokenizer based on dfa
+基于DFA自动机的Tokenizer
+
