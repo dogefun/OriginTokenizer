@@ -12,7 +12,7 @@ namespace OriginTokenizer
         //attritude
         private int[,] table;
         private int[] hash;
-        private List<Regex> regexList;
+        private List<RegularExpression> regexList;
         private List<DFAState> states;
         //stateControl
         private int nowState = 0;
@@ -20,7 +20,7 @@ namespace OriginTokenizer
         private int readIndex = 0;
         private string source;
         //Scanner Setting
-        private List<Regex> endState;
+        private List<int> skipState;
         private bool spaceEnd;
         public Scanner(ScannerInfo info)
         {
@@ -74,10 +74,12 @@ namespace OriginTokenizer
                         token.value = input.Substring(0,input.Length - 1);
                         return token;
                     }
+                    var t = Token.ErrorToken;
+                    t.value = input + source.Substring(readIndex + 1);
+                    return t;
                 }
             }
             
-            return null;
         }
 
         private void Go(int statement)
@@ -86,10 +88,14 @@ namespace OriginTokenizer
             {
                 return;
             }
+            if(statement < 0)
+            {
+                nowState = -1;//new added
+                return;
+            }
             var x = table[nowState, statement];
             lastState = nowState;
             nowState = x;
         }
-        //public void SetEnd
     }
 }

@@ -9,15 +9,15 @@ namespace OriginTokenizer
     class DFAModel
     {
         public DFAEdge entryEdge;
-        public List<Regex> regexCollection;
+        public List<RegularExpression> regexCollection;
         public List<DFAState> DFAList;
 
         public DFAModel()
         {
-            regexCollection = new List<Regex>();
+            regexCollection = new List<RegularExpression>();
             DFAList = new List<DFAState>();
         }
-        public void SetRegularExpression(Regex regex)
+        public void SetRegularExpression(RegularExpression regex)
         {
             if (regexCollection.Contains(regex))
                 return;
@@ -33,7 +33,7 @@ namespace OriginTokenizer
             var index = 1;
             foreach(var regex in regexCollection)
             {
-                var x = regex.DefineedNFAModel;
+                var x = regex.NFAModel;
                 tmpState.AddEdge(x.entryEdge);
                 index = x.RenameStates(index);
             }
@@ -83,7 +83,7 @@ namespace OriginTokenizer
             for(int i = regexCollection.Count - 1;i >= 0; i--)
             {
                 var op = regexCollection[i];
-                var nfa = op.DefineedNFAModel;
+                var nfa = op.NFAModel;
                 foreach (var x in DFAList)
                 {
                     if (x.Contains(nfa.tailState))
@@ -95,7 +95,7 @@ namespace OriginTokenizer
             }
         }
 
-        public static DFAModel CreateDFAModel(Regex regex)
+        public static DFAModel CreateDFAModel(RegularExpression regex)
         {
             DFAModel model = new DFAModel();
             model.regexCollection.Add(regex);

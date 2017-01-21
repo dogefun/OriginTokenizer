@@ -20,7 +20,7 @@ namespace OriginTokenizer
             }
         }
 
-        private List<Regex> regexList;
+        private List<RegularExpression> regexList;
         private DFAModel dfa;
         private int[] hash;             //very simple hash used to shorten dfa table
         private int[,] dfaTable;
@@ -30,20 +30,25 @@ namespace OriginTokenizer
         public int[] Hash { get { if (ready) return hash; return null; } }
         public List<DFAState> States { get { if (ready) return faState; return null; } }
         public int[,] DfaTable { get { if (ready) return dfaTable; return null; } }
-        public List<Regex> RegexList { get { return regexList; } }
+        public List<RegularExpression> RegexList { get { return regexList; } }
         public ScannerInfo()
         {
-            regexList = new List<Regex>();
+            regexList = new List<RegularExpression>();
             dfa = new DFAModel();
         }
 
-        public void AddRegex(Regex regex)
+        public void AddRegex(RegularExpression regex)
         {
             if (!regexList.Contains(regex))
                 regexList.Add(regex);
             dfa.SetRegularExpression(regex);
         }
-
+        public void setSkipRegex(RegularExpression regex)
+        {
+            if (!regexList.Contains(regex))
+                regexList.Add(regex);
+            dfa.SetRegularExpression(regex);
+        }
         public ScannerInfo CreateInfo()
         {
             dfa.CreateDFAModel();
@@ -60,7 +65,7 @@ namespace OriginTokenizer
                     dfaTable[i, j] = -1;
                 }
             }
-
+            //Priority
             for (int i = 0; i < faState.Count; i++)
             {
                 var t = dfa.DFAList[i];
@@ -81,22 +86,44 @@ namespace OriginTokenizer
         }
 
         //make new dfaTable and hash
-        //uncomplete,maybe later
+        //complete,maybe can combine with createInfo
         private void compressDFA(List<int> input)
         {
+            var list = new List<List<int>>();
+
             hash = new int[256];
             for (int i = 0; i < 256; i++)
-                hash[i] = i;
-            //var equClass = new List<leadInfoSet>();
-            //foreach (var x in inputSet)
-            //{
-            //    var e = new leadInfoSet(x);
-            //    for (int i = 0; i < dfa.DFAList.Count; i++)
-            //    {
-            //        e.set.Add(dfaTable[0, x]);
-            //    }
-            //    equClass.Add(e);
-            //}
+                hash[i] = -1;
+
+            foreach (var x in input)
+            {
+                var l = new List<int>();
+                for(int i = 0;i < dfa.DFAList.Count; i++)
+                {
+                    l.Add(dfaTable[i, x]);
+                }
+                var index = list.FindIndex(a => l.Except(a).Count() == 0 && a.Except(l).Count() == 0);
+                if (index == -1)
+                {
+                    list.Add(l);
+                    hash[x] = list.Count - 1;
+                }
+                else
+                {
+                    hash[x] = index;
+                }
+            }
+
+            dfaTable = new int[faState.Count, list.Count];
+
+
+            for (int i = 0; i < dfa.DFAList.Count; i++)
+            {
+                for (int j = 0; j < list.Count; j++)
+                {
+                    dfaTable[i, j] = list[j][i];
+                }
+            }
         }
     }
 }

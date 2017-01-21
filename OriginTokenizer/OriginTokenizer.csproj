@@ -52,7 +52,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Regex.cs" />
+    <Compile Include="RegularExpression.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScannerInfo.cs" />
   </ItemGroup>

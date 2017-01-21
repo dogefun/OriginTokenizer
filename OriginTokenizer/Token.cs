@@ -22,5 +22,16 @@ namespace OriginTokenizer
                 return x;
             }
         }
+
+        public static Token ErrorToken
+        {
+            get
+            {
+                var x = new Token();
+                x.status = -1;
+                x.Describtion = "Cant understand token";
+                return x;
+            }
+        }
     }
 }
