@@ -8,7 +8,6 @@ namespace OriginTokenizer
 {
     class DFAModel
     {
-        public DFAEdge entryEdge;
         public List<RegularExpression> regexCollection;
         public List<DFAState> DFAList;
 
@@ -25,6 +24,7 @@ namespace OriginTokenizer
             regexCollection.Add(regex);
         }
 
+        //Todo: need faster
         public void CreateDFAModel()
         {
             var finalNFA = new NFAModel();
@@ -79,8 +79,8 @@ namespace OriginTokenizer
                 }
             }
 
-            //must be very very slow
-            for(int i = regexCollection.Count - 1;i >= 0; i--)
+            //change priority here
+            for (int i = regexCollection.Count - 1; i >= 0; i--)
             {
                 var op = regexCollection[i];
                 var nfa = op.NFAModel;

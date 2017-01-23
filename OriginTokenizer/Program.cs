@@ -28,13 +28,14 @@ namespace OriginTokenizer
             RegularExpression regex2 = RegularExpression.CreateWithLiteral(" ");
             regex2.Describtion = "white space";
 
+            info.AddRegex(regex2);
             info.AddRegex(regex1);
             info.AddRegex(regex);
 
-            info.CreateInfo();//try to remove this
+            info.GenerateData();
             Scanner scanner = new Scanner(info);
-
-            scanner.SetSource("\"adad\"stri2ng");
+            scanner.SetSkipTokenRegex(regex2);
+            scanner.SetSource("\"adad\" string");
             var t = scanner.Read();
             t = scanner.Read();
             Console.WriteLine(t.Describtion);

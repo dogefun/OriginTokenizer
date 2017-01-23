@@ -6,36 +6,53 @@ using System.Threading.Tasks;
 
 namespace OriginTokenizer
 {
-    //Remember add default token
+    /// <summary>
+    /// 用于扫描字符串并分词 
+    /// </summary>
     class Scanner
     {
         //attritude
         private int[,] table;
         private int[] hash;
-        private List<RegularExpression> regexList;
+        private List<string> skipList;
         private List<DFAState> states;
         //stateControl
         private int nowState = 0;
         private int lastState = -1;
         private int readIndex = 0;
         private string source;
-        //Scanner Setting
-        private List<int> skipState;
-        private bool spaceEnd;
+
         public Scanner(ScannerInfo info)
         {
             table = info.DfaTable;
             hash = info.Hash;
-            regexList = info.RegexList;
-            states = info.States;  
+            skipList = new List<string>();
+            states = info.States;
         }
-        
+        /// <summary>
+        /// Skip Token
+        /// Such as space or anything use to devide words
+        /// Regex must define inside ScannerInfo
+        /// </summary>
+        /// <param name="regex"></param>
+        public void SetSkipTokenRegex(RegularExpression regex)
+        {
+
+            skipList.Add(regex.Describtion);
+        }
+        /// <summary>
+        /// Set source text 
+        /// </summary>
+        /// <param name="s">source text</param>
         public void SetSource(string s)
         {
             readIndex = 0;
             source = s;
         }
-
+        /// <summary>
+        /// Scan first/next word 
+        /// </summary>
+        /// <returns>Token contains scanned word and his means(describtion)</returns>
         public Token Read()
         {
             nowState = 0;
@@ -43,9 +60,10 @@ namespace OriginTokenizer
             string input = "";
             while (true)
             {
+                //readIndex touch bound
                 if(readIndex >= source.Length)
                 {
-                    if (states[nowState].isEndState)
+                    if (states[nowState].isEndState && !skipList.Contains(states[nowState].describtion))
                     {
                         var token = new Token();
                         token.Describtion = states[nowState].Describtion;
@@ -57,31 +75,37 @@ namespace OriginTokenizer
                     t.value = input;
                     return t;
                 }
-
-                input += source[readIndex];
-                var x = hash[source[readIndex]];
-                Go(x);
-
-                readIndex++;
-
+                //DFA dead end
                 if (nowState < 0)
                 {
                     readIndex--;
                     if (states[lastState].isEndState)
                     {
+                        if (skipList.Contains(states[lastState].describtion))
+                        {
+                            return Read();
+                        }
                         var token = new Token();
                         token.Describtion = states[lastState].Describtion;
-                        token.value = input.Substring(0,input.Length - 1);
+                        token.value = input.Substring(0, input.Length - 1);
                         return token;
                     }
                     var t = Token.ErrorToken;
                     t.value = input + source.Substring(readIndex + 1);
                     return t;
                 }
+
+                input += source[readIndex];
+                var x = hash[source[readIndex]];
+                Go(x);
+                readIndex++;
             }
             
         }
-
+        /// <summary>
+        /// go to next statement
+        /// </summary>
+        /// <param name="statement">the statement go</param>
         private void Go(int statement)
         {
             if (nowState < 0)
@@ -90,7 +114,7 @@ namespace OriginTokenizer
             }
             if(statement < 0)
             {
-                nowState = -1;//new added
+                nowState = -1;
                 return;
             }
             var x = table[nowState, statement];

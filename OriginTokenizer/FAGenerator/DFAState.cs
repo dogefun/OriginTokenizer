@@ -14,13 +14,6 @@ namespace OriginTokenizer
 
         internal bool isEndState;
         internal string describtion;
-        //public bool EndState
-        //{
-        //    get
-        //    {
-        //        return isEndState;
-        //    }
-        //}
 
         public string Describtion
         {
@@ -74,6 +67,7 @@ namespace OriginTokenizer
         {
             lead.Add(new DFAEdge(s, e));
         }
+        //maybe need to be faster
         private void AddState(NFAState s)
         {
             if (states.Contains(s))

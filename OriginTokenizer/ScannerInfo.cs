@@ -6,57 +6,45 @@ using System.Threading.Tasks;
 
 namespace OriginTokenizer
 {
+    /// <summary>
+    /// 用于将DFA模型转化为相应的二维数组以及其他数据
+    /// </summary>
     class ScannerInfo
     {
-        struct leadInfoSet
-        {
-            internal int lead;
-            internal List<int> set;
-
-            internal leadInfoSet(int l)
-            {
-                lead = l;
-                set = new List<int>();
-            }
-        }
-
-        private List<RegularExpression> regexList;
         private DFAModel dfa;
-        private int[] hash;             //very simple hash used to shorten dfa table
+        private int[] hash;
         private int[,] dfaTable;
         private List<DFAState> faState;
-        private bool ready = false;
+        private bool isGenerate = false;
 
-        public int[] Hash { get { if (ready) return hash; return null; } }
-        public List<DFAState> States { get { if (ready) return faState; return null; } }
-        public int[,] DfaTable { get { if (ready) return dfaTable; return null; } }
-        public List<RegularExpression> RegexList { get { return regexList; } }
+        public int[] Hash { get {if(isGenerate) return hash;return null; } }
+        public List<DFAState> States { get { if (isGenerate) return faState; return null; } }
+        public int[,] DfaTable { get { if (isGenerate) return dfaTable; return null; } }
         public ScannerInfo()
         {
-            regexList = new List<RegularExpression>();
             dfa = new DFAModel();
         }
 
+        /// <summary>
+        /// add new regex to dfa to identify text
+        /// </summary>
+        /// <param name="regex"></param>
         public void AddRegex(RegularExpression regex)
         {
-            if (!regexList.Contains(regex))
-                regexList.Add(regex);
+            if (isGenerate)
+                throw new Exception("Cant operate AddRegex after data generated");
             dfa.SetRegularExpression(regex);
         }
-        public void setSkipRegex(RegularExpression regex)
+        public ScannerInfo GenerateData()
         {
-            if (!regexList.Contains(regex))
-                regexList.Add(regex);
-            dfa.SetRegularExpression(regex);
-        }
-        public ScannerInfo CreateInfo()
-        {
+            if (isGenerate)
+                return this;
             dfa.CreateDFAModel();
+
             faState = dfa.DFAList;
             var inputSet = new List<int>();
             dfaTable = new int[faState.Count,256];
 
-            
             //too stupid way to init inputSet
             for(int i = 0;i < dfa.DFAList.Count; i++)
             {
@@ -65,11 +53,15 @@ namespace OriginTokenizer
                     dfaTable[i, j] = -1;
                 }
             }
-            //Priority
+            //init hash table
+            hash = new int[256];
+            for (int i = 0; i < 256; i++)
+                hash[i] = -1;
+
             for (int i = 0; i < faState.Count; i++)
             {
                 var t = dfa.DFAList[i];
-                foreach(var x in t.Lead)
+                foreach (var x in t.Lead)
                 {
                     if (!inputSet.Contains(x.statement))
                     {
@@ -80,20 +72,16 @@ namespace OriginTokenizer
             }
 
             //trying to shorten with the method below
+            isGenerate = true;
             compressDFA(inputSet);
-            ready = true;
             return this;
         }
 
-        //make new dfaTable and hash
-        //complete,maybe can combine with createInfo
+        //shorten new dfaTable and hash
+        //HACK: Poor performance
         private void compressDFA(List<int> input)
         {
             var list = new List<List<int>>();
-
-            hash = new int[256];
-            for (int i = 0; i < 256; i++)
-                hash[i] = -1;
 
             foreach (var x in input)
             {
@@ -102,6 +90,7 @@ namespace OriginTokenizer
                 {
                     l.Add(dfaTable[i, x]);
                 }
+                
                 var index = list.FindIndex(a => l.Except(a).Count() == 0 && a.Except(l).Count() == 0);
                 if (index == -1)
                 {
@@ -124,6 +113,11 @@ namespace OriginTokenizer
                     dfaTable[i, j] = list[j][i];
                 }
             }
+        }
+
+        private static bool isEqual(List<int> a,List<int> b)
+        {
+            return b.Except(a).Count() == 0 && a.Except(b).Count() == 0;
         }
     }
 }
