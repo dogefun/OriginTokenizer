@@ -11,6 +11,7 @@ namespace OriginTokenizer
         private List<NFAEdge> edges;
         private List<DFAEdge> lead = new List<DFAEdge>();
 
+        internal int index;
         internal bool isEndState;
         internal string describtion;
 
@@ -18,6 +19,8 @@ namespace OriginTokenizer
         {
             get
             {
+                if (describtion == null)
+                    return "";
                 return describtion;
             }
         }

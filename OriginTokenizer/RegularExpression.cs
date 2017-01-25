@@ -10,7 +10,15 @@ namespace OriginTokenizer
     {
         private string regexDescribtion;
         private NFAModel nfa;
+        internal int index;
 
+        public int Index
+        {
+            get
+            {
+                return index;
+            }
+        }
         public string Describtion
         {
             get

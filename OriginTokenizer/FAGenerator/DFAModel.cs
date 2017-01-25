@@ -86,6 +86,7 @@ namespace OriginTokenizer
                     {
                         x.isEndState = true;
                         x.describtion = op.Describtion;
+                        x.index = op.Index;
                     }
                 }
             }
@@ -108,7 +109,7 @@ namespace OriginTokenizer
                 if (x.isEndState)
                 {
                     a += "End Of ";
-                    a += x.describtion;
+                    a += x.Describtion;
                     a += "\n";
                 }
                 foreach(var y in x.States)

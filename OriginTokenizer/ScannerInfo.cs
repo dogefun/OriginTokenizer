@@ -12,11 +12,11 @@ namespace OriginTokenizer
         private DFAModel dfa;
         private int[] hash;
         private int[,] dfaTable;
-        private List<DFAState> faState;
+        private List<Token> faState;
         private bool isGenerate = false;
-
+        private int index = 1;
         internal int[] Hash { get {if(isGenerate) return hash;return null; } }
-        internal List<DFAState> States { get { if (isGenerate) return faState; return null; } }
+        internal List<Token> States { get { if (isGenerate) return faState; return null; } }
         internal int[,] DfaTable { get { if (isGenerate) return dfaTable; return null; } }
         public ScannerInfo()
         {
@@ -31,6 +31,7 @@ namespace OriginTokenizer
         {
             if (isGenerate)
                 throw new Exception("Cant operate AddRegex after data generated");
+            regex.index = index++;
             dfa.SetRegularExpression(regex);
         }
         public ScannerInfo GenerateData()
@@ -39,7 +40,19 @@ namespace OriginTokenizer
                 return this;
             dfa.CreateDFAModel();
 
-            faState = dfa.DFAList;
+            faState = new List<Token>();
+            
+            for (int i = 0;i < dfa.DFAList.Count; i++)
+            {
+                faState.Add(null);
+                if (dfa.DFAList[i].isEndState)
+                {
+                    faState[i] = new Token();
+                    faState[i].Describtion = dfa.DFAList[i].Describtion;
+                    faState[i].status = dfa.DFAList[i].index;
+                }
+            }
+
             var inputSet = new List<int>();
             dfaTable = new int[faState.Count,256];
 

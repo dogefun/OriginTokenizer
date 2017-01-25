@@ -10,8 +10,8 @@ namespace OriginTokenizer
         //attritude
         private int[,] table;
         private int[] hash;
-        private List<string> skipList;
-        private List<DFAState> states;
+        private List<int> skipList;
+        private List<Token> states;
         //stateControl
         private int nowState = 0;
         private int lastState = -1;
@@ -22,7 +22,7 @@ namespace OriginTokenizer
         {
             table = info.DfaTable;
             hash = info.Hash;
-            skipList = new List<string>();
+            skipList = new List<int>();
             states = info.States;
         }
         /// <summary>
@@ -34,7 +34,7 @@ namespace OriginTokenizer
         public void SetSkipTokenRegex(RegularExpression regex)
         {
 
-            skipList.Add(regex.Describtion);
+            skipList.Add(regex.index);
         }
         /// <summary>
         /// Set source text 
@@ -57,44 +57,55 @@ namespace OriginTokenizer
             while (true)
             {
                 //readIndex touch bound
-                if(readIndex >= source.Length)
+                if(readIndex > source.Length)
                 {
-                    if (states[nowState].isEndState && !skipList.Contains(states[nowState].describtion))
-                    {
-                        var token = new Token();
-                        token.Describtion = states[nowState].Describtion;
-                        token.value = input;
-                        return token;
-                    }
-
                     var t = Token.EndOfSourceToken;
                     t.value = input;
                     return t;
                 }
-                //DFA dead end
-                if (nowState < 0)
+                if (readIndex == source.Length)
                 {
-                    readIndex--;
-                    if (states[lastState].isEndState)
+                    readIndex++;
+                    if (states[nowState] != null && !skipList.Contains(states[nowState].Index))
                     {
-                        if (skipList.Contains(states[lastState].describtion))
-                        {
-                            return Read();
-                        }
-                        var token = new Token();
-                        token.Describtion = states[lastState].Describtion;
-                        token.value = input.Substring(0, input.Length - 1);
+                        var token = states[nowState].Clone() as Token;
+                        //token.Describtion = states[nowState].Describtion;
+                        //token.status = states[nowState].Index;
+                        token.value = input;
+                        token.startPosition = readIndex - 1 - input.Length;
                         return token;
                     }
-                    var t = Token.ErrorToken;
-                    t.value = input + source.Substring(readIndex + 1);
-                    return t;
+                    continue;
                 }
 
                 input += source[readIndex];
                 var x = hash[source[readIndex]];
                 Go(x);
                 readIndex++;
+
+                //DFA dead end
+                if (nowState < 0)
+                {
+                    readIndex--;
+                    if (lastState >= 0 && states[lastState] != null)
+                    {
+                        if (skipList.Contains(states[lastState].Index))
+                        {
+                            return Read();
+                        }
+                        //var token = new Token();
+                        var token = states[lastState].Clone() as Token;
+                        //token.Describtion = states[lastState].Describtion;
+                        //token.status = states[lastState].index;
+                        token.value = input.Substring(0, input.Length - 1);
+                        token.startPosition = readIndex - input.Length + 1;
+
+                        return token;
+                    }
+                    var t = Token.ErrorToken;
+                    t.value = input + source.Substring(readIndex + 1);
+                    return t;
+                }
             }
             
         }
