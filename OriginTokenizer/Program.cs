@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OriginTokenizer
 {
@@ -11,6 +7,8 @@ namespace OriginTokenizer
         static void AnotherTestCase()
         {
             ScannerInfo info = new ScannerInfo();
+            RegularExpression regex1 = new RegularExpression();
+            regex1.DefineLiteral("string");
         }
         static void Testcase()
         {
@@ -36,15 +34,15 @@ namespace OriginTokenizer
             Scanner scanner = new Scanner(info);
             scanner.SetSkipTokenRegex(regex2);
             scanner.SetSource("\"adad\" string");
-            var t = scanner.Read();
-            t = scanner.Read();
-            Console.WriteLine(t.Describtion);
+            var t = scanner.ReadAll();
+
+            Console.WriteLine(/*t.Describtion*/t);
 
         }
         static void Main(string[] args)
         {
             Testcase();
-            Console.Read();
+            //Console.Read();
         }
     }
 }

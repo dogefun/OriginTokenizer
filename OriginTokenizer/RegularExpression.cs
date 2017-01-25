@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 //Regex is used to create NFA model using RegularExpression rule
 namespace OriginTokenizer
 {
-    class RegularExpression 
+    public class RegularExpression 
     {
         private string regexDescribtion;
         private NFAModel nfa;
@@ -26,7 +25,7 @@ namespace OriginTokenizer
                 }
             }
         }
-        public NFAModel NFAModel
+        internal NFAModel NFAModel
         {
             get
             {

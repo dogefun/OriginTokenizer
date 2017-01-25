@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OriginTokenizer
 {
     /// <summary>
     /// 用于扫描字符串并分词 
     /// </summary>
-    class Scanner
+    public class Scanner
     {
         //attritude
         private int[,] table;
@@ -101,6 +97,18 @@ namespace OriginTokenizer
                 readIndex++;
             }
             
+        }
+        public List<Token> ReadAll()
+        {
+            var list = new List<Token>();
+            while (true)
+            {
+                var token = Read();
+                if (token.status < 0)
+                    break;
+                list.Add(token);
+            }
+            return list;
         }
         /// <summary>
         /// go to next statement

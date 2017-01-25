@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OriginTokenizer
 {
     /// <summary>
     /// 用于将DFA模型转化为相应的二维数组以及其他数据
     /// </summary>
-    class ScannerInfo
+    public class ScannerInfo
     {
         private DFAModel dfa;
         private int[] hash;
@@ -17,9 +15,9 @@ namespace OriginTokenizer
         private List<DFAState> faState;
         private bool isGenerate = false;
 
-        public int[] Hash { get {if(isGenerate) return hash;return null; } }
-        public List<DFAState> States { get { if (isGenerate) return faState; return null; } }
-        public int[,] DfaTable { get { if (isGenerate) return dfaTable; return null; } }
+        internal int[] Hash { get {if(isGenerate) return hash;return null; } }
+        internal List<DFAState> States { get { if (isGenerate) return faState; return null; } }
+        internal int[,] DfaTable { get { if (isGenerate) return dfaTable; return null; } }
         public ScannerInfo()
         {
             dfa = new DFAModel();

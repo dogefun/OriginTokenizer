@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OriginTokenizer
+﻿namespace OriginTokenizer
 {
-    class Token
+    public class Token
     {
         public int status;
         public string value;
